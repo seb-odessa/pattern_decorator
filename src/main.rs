@@ -130,7 +130,6 @@ fn main() {
     {
         Dish::new(Box::new(Espresso)).print();
     }
-
     {
         let mut dish = Dish::new(Box::new(DarkRoast));
         dish.add(Box::new(Mocha));
