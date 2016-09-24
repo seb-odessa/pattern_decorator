@@ -1,14 +1,14 @@
 
-mod dishes {
+mod beverage {
     pub type Cost = f32;
-    pub trait Component {
+    pub trait Beverage {
         fn name(&self) -> String;
         fn cost(&self) -> Cost;
     }
 
     #[allow(dead_code)]
     pub struct HouseBlend;
-    impl Component for HouseBlend {
+    impl Beverage for HouseBlend {
         fn name(&self) -> String {
             String::from("Кофе (Домашняя смесь)")
         }
@@ -19,7 +19,7 @@ mod dishes {
 
     #[allow(dead_code)]
     pub struct DarkRoast;
-    impl Component for DarkRoast {
+    impl Beverage for DarkRoast {
         fn name(&self) -> String {
             String::from("Кофе (Тёмная обжарка)")
         }
@@ -30,7 +30,7 @@ mod dishes {
 
     #[allow(dead_code)]
     pub struct Decaf;
-    impl Component for Decaf {
+    impl Beverage for Decaf {
         fn name(&self) -> String {
             String::from("Кофе (Без кофеина)")
         }
@@ -41,7 +41,7 @@ mod dishes {
 
     #[allow(dead_code)]
     pub struct Espresso;
-    impl Component for Espresso {
+    impl Beverage for Espresso {
         fn name(&self) -> String {
             String::from("Кофе (Espresso)")
         }
@@ -52,14 +52,14 @@ mod dishes {
 
     #[allow(dead_code)]
     pub struct Milk <'a>{
-        comp : Box<Component+'a>
+        comp : Box<Beverage +'a>
     }
     impl <'a> Milk <'a>{
-        pub fn new<T:Component+'a>(comp:T) -> Self {
+        pub fn new<T: Beverage +'a>(comp:T) -> Self {
             Milk { comp : Box::new(comp) }
         }
     }
-    impl <'a> Component for Milk <'a>{
+    impl <'a> Beverage for Milk <'a>{
         fn name(&self) -> String {
             self.comp.name() + &String::from(" + Молочная пена")
         }
@@ -70,14 +70,14 @@ mod dishes {
 
     #[allow(dead_code)]
     pub struct Mocha<'a> {
-        comp : Box<Component + 'a>
+        comp : Box<Beverage + 'a>
     }
     impl <'a> Mocha <'a>{
-        pub fn new<T:Component+'a>(comp:T) -> Self {
+        pub fn new<T: Beverage +'a>(comp:T) -> Self {
             Mocha { comp : Box::new(comp) }
         }
     }
-    impl <'a> Component for Mocha <'a>{
+    impl <'a> Beverage for Mocha <'a>{
         fn name(&self) -> String {
             self.comp.name() + &String::from(" + Шоколад")
         }
@@ -88,14 +88,14 @@ mod dishes {
 
     #[allow(dead_code)]
     pub struct Soy<'a>{
-        comp : Box<Component+'a>
+        comp : Box<Beverage +'a>
     }
     impl <'a> Soy <'a>{
-        pub fn new<T:Component+'a>(comp:T) -> Self {
+        pub fn new<T: Beverage +'a>(comp:T) -> Self {
             Soy { comp : Box::new(comp) }
         }
     }
-    impl <'a> Component for Soy <'a>{
+    impl <'a> Beverage for Soy <'a>{
         fn name(&self) -> String {
             self.comp.name() + &String::from(" + Соя")
         }
@@ -106,14 +106,14 @@ mod dishes {
 
     #[allow(dead_code)]
     pub struct Whip<'a> {
-        comp : Box<Component+'a>
+        comp : Box<Beverage +'a>
     }
     impl <'a> Whip <'a>{
-        pub fn new<T:Component+'a>(comp:T) -> Self {
+        pub fn new<T: Beverage +'a>(comp:T) -> Self {
             Whip { comp : Box::new(comp) }
         }
     }
-    impl <'a> Component for Whip<'a> {
+    impl <'a> Beverage for Whip<'a> {
         fn name(&self) -> String {
             self.comp.name() + &String::from(" + Взбитые сливки")
         }
@@ -123,9 +123,9 @@ mod dishes {
     }
 }
 
-use dishes::*;
+use beverage::*;
 
-pub fn print<T:Component>(beverage : &T) {
+pub fn print<T: Beverage>(beverage : &T) {
     println!("{:8.2} $ = {}", &beverage.cost(), &beverage.name());
 }
 
