@@ -51,97 +51,87 @@ mod dishes {
     }
 
     #[allow(dead_code)]
-    pub struct Milk;
-    impl Component for Milk {
+    pub struct Milk <'a>{
+        comp : Box<Component+'a>
+    }
+    impl <'a> Milk <'a>{
+        pub fn new<T:Component+'a>(comp:T) -> Self {
+            Milk { comp : Box::new(comp) }
+        }
+    }
+    impl <'a> Component for Milk <'a>{
         fn name(&self) -> String {
-            String::from("Молочная пена")
+            self.comp.name() + &String::from(" + Молочная пена")
         }
         fn cost(&self) -> Cost {
-            0.10
+            self.comp.cost() + 0.10
         }
     }
 
     #[allow(dead_code)]
-    pub struct Mocha;
-    impl Component for Mocha {
+    pub struct Mocha<'a> {
+        comp : Box<Component + 'a>
+    }
+    impl <'a> Mocha <'a>{
+        pub fn new<T:Component+'a>(comp:T) -> Self {
+            Mocha { comp : Box::new(comp) }
+        }
+    }
+    impl <'a> Component for Mocha <'a>{
         fn name(&self) -> String {
-            String::from("Шоколад")
+            self.comp.name() + &String::from(" + Шоколад")
         }
         fn cost(&self) -> Cost {
-            0.20
+            self.comp.cost() + 0.20
         }
     }
 
     #[allow(dead_code)]
-    pub struct Soy;
-    impl Component for Soy {
+    pub struct Soy<'a>{
+        comp : Box<Component+'a>
+    }
+    impl <'a> Soy <'a>{
+        pub fn new<T:Component+'a>(comp:T) -> Self {
+            Soy { comp : Box::new(comp) }
+        }
+    }
+    impl <'a> Component for Soy <'a>{
         fn name(&self) -> String {
-            String::from("Соя")
+            self.comp.name() + &String::from(" + Соя")
         }
         fn cost(&self) -> Cost {
-            0.15
+            self.comp.cost() + 0.15
         }
     }
 
     #[allow(dead_code)]
-    pub struct Whip;
-    impl Component for Whip {
+    pub struct Whip<'a> {
+        comp : Box<Component+'a>
+    }
+    impl <'a> Whip <'a>{
+        pub fn new<T:Component+'a>(comp:T) -> Self {
+            Whip { comp : Box::new(comp) }
+        }
+    }
+    impl <'a> Component for Whip<'a> {
         fn name(&self) -> String {
-            String::from("Взбитые сливки")
+            self.comp.name() + &String::from(" + Взбитые сливки")
         }
         fn cost(&self) -> Cost {
-            0.10
-        }
-    }
-
-    #[allow(dead_code)]
-    pub struct Dish {
-        components: Vec<Box<Component>>,
-    }
-    impl Dish {
-        pub fn new(main: Box<Component>) -> Self {
-            Dish { components: vec![main] }
-        }
-        pub fn add(&mut self, comp: Box<Component>) {
-            self.components.push(comp);
-        }
-        pub fn print(&self) {
-            println!("{:8.2} $ = {}", &self.cost(), &self.name());
-        }
-    }
-    impl Component for Dish {
-        fn name(&self) -> String {
-            if let Some(main) = self.components.iter().take(1).next() {
-                return self.components.iter().skip(1).fold(main.name(), |acc, component| {
-                    acc + " + " + &component.name()
-                });
-            }
-            String::new()
-        }
-        fn cost(&self) -> Cost {
-            self.components.iter().fold(0.0, |acc, component| acc + component.cost())
+            self.comp.cost() + 0.10
         }
     }
 }
 
 use dishes::*;
 
+pub fn print<T:Component>(beverage : &T) {
+    println!("{:8.2} $ = {}", &beverage.cost(), &beverage.name());
+}
+
 fn main() {
-    {
-        Dish::new(Box::new(Espresso)).print();
-    }
-    {
-        let mut dish = Dish::new(Box::new(DarkRoast));
-        dish.add(Box::new(Mocha));
-        dish.add(Box::new(Mocha));
-        dish.add(Box::new(Whip));
-        dish.print();
-    }
-    {
-        let mut dish = Dish::new(Box::new(HouseBlend));
-        dish.add(Box::new(Soy));
-        dish.add(Box::new(Mocha));
-        dish.add(Box::new(Whip));
-        dish.print();
-    }
+    print(&Espresso);
+    print(&Milk::new(Espresso));
+    print(&Whip::new(Mocha::new(Mocha::new(DarkRoast))));
+    print(&Whip::new(Mocha::new(Soy::new(HouseBlend))));
 }
